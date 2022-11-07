@@ -5,10 +5,9 @@ name: Testing Python CI/CD
 
 steps:
 - name: Install and deploy
-  image: python
+  image: martimy/netauto:0.1
   commands:
-  - pip3 install -r requirements.txt
-  - python3 bat.py
+  - python bat.py
 
 trigger:
   branch:
