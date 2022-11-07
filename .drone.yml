@@ -15,5 +15,3 @@ steps:
 trigger:
   branch:
     - test_pipe
-  event:
-    - push
