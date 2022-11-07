@@ -1,10 +1,10 @@
 kind: pipeline
 type: docker
-name: Testing Python CI/CD
+name: Network Configuration Check
 
 
 steps:
-- name: Install and deploy
+- name: Batfish Check
   image: martimy/netauto:0.1
   environment:
     BATFISH_SERVER:
@@ -14,7 +14,5 @@ steps:
 
 trigger:
   branch:
-    exclude:
-    - main
-    - master
+    - test_pipe
 
