@@ -7,7 +7,7 @@ steps:
 - name: Install and deploy
   image: martimy/netauto:0.1
   commands:
-  - python bat.py
+  - python assert.py
 
 trigger:
   branch:
