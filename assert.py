@@ -5,7 +5,7 @@ Created on Sun Nov  6 17:20:47 2022
 @author: artim
 """
 
-
+import os
 import pandas as pd
 from pybatfish.client.commands import *
 from pybatfish.question import load_questions
@@ -19,6 +19,11 @@ from pybatfish.client.asserts import (
     assert_num_results,
     assert_zero_results,
 )
+
+
+# Get environment variables
+BATFISH_SERVER = os.getenv('BATFISH_SERVER')
+
 
 # from rich import print as rprint
 
@@ -81,7 +86,7 @@ def main():
     NETWORK_NAME = "DESIGN_LAB1"
     SNAPSHOT_NAME = "lab1"
     SNAPSHOT_DIR = "lab1"
-    bf_session.host = "129.173.143.55"
+    bf_session.host = BATFISH_SERVER
     bf_set_network(NETWORK_NAME)
     init_snap = bf_init_snapshot(
         SNAPSHOT_DIR, name=SNAPSHOT_NAME, overwrite=True)

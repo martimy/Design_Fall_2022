@@ -6,6 +6,9 @@ name: Testing Python CI/CD
 steps:
 - name: Install and deploy
   image: martimy/netauto:0.1
+  environment:
+    BATFISH_SERVER:
+      from_secret: batfish_server
   commands:
   - python assert.py
 
