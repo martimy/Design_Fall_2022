@@ -26,4 +26,24 @@ The actions will be triggered on push.
 
 ## Example 2: Drone
 
-[![Build Status](http://129.173.143.55/api/badges/martimy/Network-Automation/status.svg)](http://129.173.143.55/martimy/Network-Automation)
+Install Drone and a runner. Create ./drone.yml file
+
+```
+kind: pipeline
+type: docker
+name: Testing Python CI/CD
+
+
+steps:
+- name: Install and deploy
+  image: python
+  commands:
+  - pip3 install -r requirements.txt
+  - python3 bat.py
+
+trigger:
+  branch:
+    exclude:
+    - main
+    - master
+```
