@@ -3,6 +3,8 @@
 This is a test of github actions.
 starting with a simple example:
 
+Create file ".github/workflows/demo-workflow-file.yml" with the following content:
+ 
 ```
 on: [push]
 
@@ -17,3 +19,7 @@ jobs:
         echo This demo file shows a 
         echo very basic and easy-to-understand workflow.
 ```
+
+The actions will be triggered on push.
+
+
