@@ -10,7 +10,7 @@ steps:
     BATFISH_SERVER:
       from_secret: batfish_server
   commands:
-  - python assert.py
+  - python check_lab_1.py
 
 trigger:
   branch:

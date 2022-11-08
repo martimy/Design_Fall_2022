@@ -13,7 +13,7 @@
       ios_config:
         backup: yes
         backup_options:
-          #filename: backup.cfg
-          dir_path: configs
+          filename: "{{ inventory_hostname}}.cfg"
+          dir_path: lab1/configs
       register: backup_ios_location
       when: ansible_network_os == 'ios'
