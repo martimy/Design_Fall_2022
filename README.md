@@ -1,6 +1,7 @@
 # Network Automation
 
 ## Example 2: Github actions
+
 This is a test of github actions.
 starting with a simple example:
 
@@ -47,4 +48,3 @@ trigger:
     - main
     - master
 ```
-
