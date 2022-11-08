@@ -13,7 +13,5 @@ steps:
   - python assert.py
 
 trigger:
-  branch:
-    - test_pipe
   event:
     - push
