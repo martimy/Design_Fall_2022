@@ -14,4 +14,8 @@ steps:
 
 trigger:
   branch:
+    include:
     - test_pipe
+  event:
+    include:
+    - push
