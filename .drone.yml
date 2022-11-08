@@ -13,5 +13,9 @@ steps:
   - python assert.py
 
 trigger:
+  branch:
+    exclude:
+    - master
+    - main
   event:
     - push
