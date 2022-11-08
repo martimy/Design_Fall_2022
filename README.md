@@ -1,5 +1,6 @@
 # Network Automation
 
+## Example 2: Github actions
 This is a test of github actions.
 starting with a simple example:
 
@@ -22,4 +23,28 @@ jobs:
 
 The actions will be triggered on push.
 
+
+## Example 2: Drone
+
+Install Drone and a runner. Create ./drone.yml file
+
+```
+kind: pipeline
+type: docker
+name: Testing Python CI/CD
+
+
+steps:
+- name: Install and deploy
+  image: python
+  commands:
+  - pip3 install -r requirements.txt
+  - python3 bat.py
+
+trigger:
+  branch:
+    exclude:
+    - main
+    - master
+```
 
