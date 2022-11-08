@@ -40,20 +40,20 @@ domain_name = "inwk.local"
 def test_num_routers():
     """Testing for number of devices"""
     file_status = bfq.fileParseStatus().answer().frame()
-    assert_num_results(file_status, num, soft=False)
+    assert_num_results(file_status, num, soft=True)
 
 
 def test_init_issues():
     """Testing for parsing violations"""
     inissue = bfq.initIssues().answer().frame()
-    assert_zero_results(inissue, soft=False)
+    assert_zero_results(inissue, soft=True)
 
 
 def test_clean_parsing():
     """Testing for parsing violations"""
     file_status = bfq.fileParseStatus().answer().frame()
     status_violations = file_status[file_status["Status"] != "PASSED"]
-    assert_zero_results(status_violations, soft=False)
+    assert_zero_results(status_violations, soft=True)
 
 
 def test_hostnames():
@@ -62,15 +62,15 @@ def test_hostnames():
         nodes="", properties="Hostname, Domain_Name").answer().frame()
     name_violators = node_props[node_props['Hostname'].apply(
         lambda x: x not in routers)]
-    assert_zero_results(name_violators, soft=False)
+    assert_zero_results(name_violators, soft=True)
 
     domain_violators = node_props[node_props['Domain_Name'].apply(
         lambda x: x != domain_name)]
-    assert_zero_results(domain_violators, soft=False)
+    assert_zero_results(domain_violators, soft=True)
 
 
 def test_undefined_references(snap):
-    assert_no_undefined_references(snapshot=snap)
+    assert_no_undefined_references(snapshot=snap, soft=True)
 
 
 def test_duplicate_rtr_ids(snap):
@@ -78,6 +78,7 @@ def test_duplicate_rtr_ids(snap):
     assert_no_duplicate_router_ids(
         snapshot=snap,
         protocols={"ospf", "bgp"},
+        soft=True
     )
 
 
