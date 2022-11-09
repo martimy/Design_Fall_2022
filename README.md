@@ -61,10 +61,16 @@ Follow these instructions after completing all the lab required configuration st
 
    Note: the last step may require a username/password
 
-5. Check if their configuration files have passed the checks
+5. Check if your configuration files have passed the checks:
 
-   \<<To be completed\>>   
+   - Go the github [repository](https://github.com/DAL-INWK/Design_Fall_2022)
+   - click on 'barnches'   
 
+   ![](img/branches.png)
+
+   - Verify that you have a green checkmark in front of your branch. You can click on the checkmark to find details.
+
+   ![](img/checks.png)
 
 ## Validation Process
 
