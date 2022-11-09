@@ -1,51 +1,73 @@
-# Network Automation
+# Automated Network Validation
 
-## Example 2: Github actions
+This repository provides an automated process to checking the validity of network configuration files generated during lab sessions.
 
-This is a test of github actions.
-starting with a simple example:
+To use this repository, each student group need to:
 
-Create file ".github/workflows/demo-workflow-file.yml" with the following content:
+1. Clone the main branch of this repository
+2. Create a branch named after their group
+3. Copy network device configuration to the branch
+4. Commit and push the branch
+5. Check if their configuration files have passed the checks
 
-```
-on: [push]
-
-jobs:
-  build:
-    name: Hello world
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Write a multi-line message
-      run: |
-        echo This demo file shows a
-        echo very basic and easy-to-understand workflow.
-```
-
-The actions will be triggered on push.
+Instructors will also be able to view the results and advise students on how to fix any errors.
 
 
-## Example 2: Drone
+## Instructions for students:
 
-Install Drone and a runner. Create ./drone.yml file
+Follow these instructions after completing all the lab required configuration steps:
 
-```
-kind: pipeline
-type: docker
-name: Testing Python CI/CD
+1. Clone the main branch of this repository in the home directory:
+
+   ```
+   $ cd
+   $ git clone --branch main https://github.com/DAL-INWK/Design_Fall_2022
+   ```
+
+2. Create a branch named after your group (use the format gxx, where xx is your group number) and checkout the branch:
+
+   ```
+   $ cd Design_Fall_2022
+   $ git branch g99
+   $ git checkout g99
+   ```
+
+3. Copy network device configuration using Ansible:
+
+   ```
+   $ export ANSIBLE_HOST_KEY_CHECKING=False
+   $ ansible-playbook -i inventory.txt play_backup.yml
+   ```
+
+   If the above process was successful (all routers report ok=1), then you will find a folder 'lab1/configs' created in the repository. If the process failed, then it is likely that the SSH configuration on the network devices is not completed and you must follow the instructions in the lab assignment documents to configure SSH.
+
+4. Commit the changes and push the branch:
+
+   ```
+   $ git add lab1
+   $ git status
+    On branch 95
+    Changes to be committed:
+      (use "git reset HEAD <file>..." to unstage)
+
+            new file:   lab1/configs/R11.cfg
+            new file:   lab1/configs/R12.cfg
+            new file:   lab1/configs/R21.cfg
+            new file:   lab1/configs/R22.cfg
+            new file:   lab1/configs/R23.cfg
+   $ git commit -m "add config files for group xx"
+   $ git push --set-upstream origin 95
+   ```
+
+   Note: the last step may require a username/password
+
+5. Check if their configuration files have passed the checks
+
+   \<<To be completed\>>   
 
 
-steps:
-- name: Install and deploy
-  image: python
-  commands:
-  - pip3 install -r requirements.txt
-  - python3 bat.py
+## Validation Process
 
-trigger:
-  branch:
-    exclude:
-    - main
-    - master
-```
+This network validation process applies some CI/CD principles to check device configuration against some common configuration errors. The process includes:
 
+\<<To be completed\>>   
