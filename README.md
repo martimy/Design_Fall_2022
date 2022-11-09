@@ -49,4 +49,3 @@ trigger:
     - master
 ```
 
-change something
