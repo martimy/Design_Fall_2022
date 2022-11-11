@@ -16,7 +16,12 @@ steps:
     - lab1_*
 
 - name: Lab 2 Batfish Analysis
-  - echo "No check is available"
+  image: martimy/netauto:0.1
+  environment:
+    BATFISH_SERVER:
+      from_secret: batfish_server
+  commands:
+  - python check_lab_1.py
   when:
     branch:
     - lab2_*
