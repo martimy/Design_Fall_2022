@@ -20,5 +20,7 @@ trigger:
     exclude:
     - master
     - main
+    include:
+    - lab*
   event:
     - push
