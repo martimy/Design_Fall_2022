@@ -1,19 +1,5 @@
 ---
 kind: pipeline
-type: exec
-name: default
-
-platform:
-  os: linux
-  arch: amd64
-
-steps:
-- name: greeting
-  commands:
-  - hostname -I | awk '{print $1}'
-
----
-kind: pipeline
 type: docker
 name: Design Labs Configuration Check
 
