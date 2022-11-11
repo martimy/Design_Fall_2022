@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sun Nov  6 17:20:47 2022
-
-@author: artim
+Created by Maen Artimy, Nov 2022
 """
 
 import os
@@ -25,7 +23,7 @@ from pybatfish.client.asserts import (
 BATFISH_SERVER = os.getenv('BATFISH_SERVER')
 NETWORK_NAME = "DESIGN_LAB1"
 SNAPSHOT_NAME = "lab1"
-SNAPSHOT_DIR = "lab1"
+SNAPSHOT_DIR = "lab"
 
 # from rich import print as rprint
 

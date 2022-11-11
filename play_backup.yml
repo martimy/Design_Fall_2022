@@ -14,6 +14,6 @@
         backup: yes
         backup_options:
           filename: "{{ inventory_hostname}}.cfg"
-          dir_path: lab1/configs
+          dir_path: lab/configs
       register: backup_ios_location
       when: ansible_network_os == 'ios'
