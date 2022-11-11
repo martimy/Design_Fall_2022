@@ -25,7 +25,7 @@ from pybatfish.client.asserts import (
 BATFISH_SERVER = os.getenv('BATFISH_SERVER')
 NETWORK_NAME = "DESIGN_LAB1"
 SNAPSHOT_NAME = "lab1"
-SNAPSHOT_DIR = "design_labs/lab1"
+SNAPSHOT_DIR = "lab1"
 
 # from rich import print as rprint
 
