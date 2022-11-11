@@ -1,10 +1,11 @@
+---
 kind: pipeline
 type: docker
-name: Network Configuration Check
+name: Lab 1 Configuration Check
 
 
 steps:
-- name: Batfish Check
+- name: Batfish Analysis
   image: martimy/netauto:0.1
   environment:
     BATFISH_SERVER:
@@ -14,6 +15,19 @@ steps:
   when:
     branch:
     - lab1_*
+
+---
+kind: pipeline
+type: docker
+name: Lab 2 Configuration Check
+
+
+steps:
+- name: Batfish Analysis
+  - echo "No check is available"
+  when:
+    branch:
+    - lab2_*
 
 trigger:
   branch:
