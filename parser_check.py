@@ -108,7 +108,6 @@ def test_snmp_properties(cfg_files):
 
     # Ask SNMP questions
     snmp_parameters = SNMPValues(cfg_files).answer().frame()
-    print(snmp_parameters)
     
     # check if all nodes are present
     assert len(snmp_parameters.index) == NUM, f"Expecting {NUM} lines, \
@@ -136,3 +135,4 @@ if __name__ == "__main__":
     assert files_list, "No configuration files"
 
     test_snmp_properties(files_list)
+    print("All checks passed!")
