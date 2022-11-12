@@ -4,8 +4,16 @@ type: docker
 name: Design Labs Configuration Check
 
 steps:
+- name: Lab Parser Check
+  image: martimy/netauto:0.2
+  commands:
+  - python parser_check.py
+  when:
+    branch:
+    - lab1_*
+
 - name: Lab 1 Batfish Analysis
-  image: martimy/netauto:0.1
+  image: martimy/netauto:0.2
   environment:
     BATFISH_SERVER:
       from_secret: batfish_server
@@ -16,7 +24,7 @@ steps:
     - lab1_*
 
 - name: Lab 2 Batfish Analysis
-  image: martimy/netauto:0.1
+  image: martimy/netauto:0.2
   environment:
     BATFISH_SERVER:
       from_secret: batfish_server
