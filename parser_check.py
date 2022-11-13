@@ -8,14 +8,18 @@ import pyparsing as pp
 import pandas as pd
 
 
-# This code verifies if a Cisco device configuration includes SNMP configuration
+# This code verifies if a Cisco device configuration includes lines
 # similar to the following:
+#
+# clock timezone AST -4 0
+# clock summer-time ADT recurring
 #
 # snmp-server community public RO
 # snmp-server community private RW
 # snmp-server location my_location
 # snmp-server contact admin@domain
-
+#
+# logging host 10.1.155.100
 
 SNMP_END_MARKER = pp.LineEnd().suppress()
 REMAINDER = pp.SkipTo(pp.LineEnd())
@@ -23,18 +27,148 @@ REMAINDER = pp.SkipTo(pp.LineEnd())
 NUM = 5
 PATH = 'lab/configs'
 READ_COL = 'Read'
+SERVER_COL = 'Host'
+HRS_COL = 'HRS'
 ref_string = set(["dcread"])
+ref_log_server = set(['10.1.155.100'])
+TIME_SHIFT = '-4'
+SUMR_COL = 'Summer'
+ADT = 'ADT'
 
-class SNMPValues():
+class ConfigValues():
     """
-    Collects SNMP values from configuration
+    Collects values from configuration
     """
 
     def __init__(self, cfg_list):
         self.cfg_list = cfg_list
         self.results = []
+        self.header = {'Node': ''}
+        self.repeated = []
 
-    def __snmp_parser(self, text):
+    def a_parser(self, text):
+        """Parse configuration"""
+        return []
+
+    def parse(self, device, cfg_lines):
+        """
+        Parse configuration lines and return dict
+
+        """
+
+        # parse text and return a list of dict
+        log_lines = self.a_parser(cfg_lines)
+        log_list = [p.asDict() for p in log_lines if p]
+
+        # merge all dictionaries but there may be
+        # multiple read and readwrite communities
+        merged = self.header.copy()
+        # merged.update(self.header)
+        merged['Node'] = device
+        for col in self.repeated:
+            merged[col] = []
+        for lines in log_list:
+            for key, value in lines.items():
+                if key in self.repeated:
+                    merged[key].append(value)
+                else:
+                    merged[key] = value
+        return merged
+
+    def answer(self):
+        """
+        returns a list if parsed values
+
+        """
+
+        for filename in self.cfg_list:
+            with open(filename, 'r') as fgfile:
+                cfg = fgfile.read()
+                device = os.path.basename(filename)
+                self.results.append(self.parse(device, cfg))
+        return self
+
+    def frame(self):
+        """
+        Format as pandas frame
+        """
+
+        return pd.DataFrame(self.results)
+
+
+class ClockValues(ConfigValues):
+    """
+    Collects Clock values from configuration
+    """
+
+    def __init__(self, cfg_list):
+        super().__init__(cfg_list)
+
+        self.header = {'Node': '', 'Zone': '', 'HRS': '', 'MIN': '',
+                       'Summer': '', 'Recurring': ''}
+        self.repeated = []
+
+    def a_parser(self, text):
+        """
+        Parse SysLog configuration.
+        """
+
+        CLK_START_MARKER = pp.LineStart() + pp.Keyword("clock").suppress()
+        CLK_TIMEZONE = pp.Keyword("timezone").suppress()
+        CLK_ZONE = pp.Word(pp.printables, asKeyword=True)
+        CLK_HRS = pp.Combine(pp.Optional('+') + pp.Optional('-') +
+                             pp.Word(pp.nums))("HRS")
+        CLK_MIN = pp.Word(pp.nums)("MIN")
+        CLK_SUMMER = pp.Keyword("summer-time").suppress()
+        CLK_REC = pp.Keyword("recurring").setParseAction(
+            pp.replaceWith("enabled"))
+
+        clock_timezone = CLK_START_MARKER + CLK_TIMEZONE + CLK_ZONE("Zone") + \
+            CLK_HRS + CLK_MIN
+        clock_summertime = CLK_START_MARKER + CLK_SUMMER + \
+            CLK_ZONE("Summer") + CLK_REC("Recurring")
+
+        command_def = clock_timezone ^ clock_summertime
+        return command_def.searchString(text)
+
+
+class LoggerValues(ConfigValues):
+    """
+    Collects SysLog values from configuration
+    """
+
+    def __init__(self, cfg_list):
+        super().__init__(cfg_list)
+
+        self.header = {'Node': '', 'Host': []}
+        self.repeated = ['Host']
+
+    def a_parser(self, text):
+        """
+        Parse SysLog configuration.
+        """
+
+        LOG_START_MARKER = pp.LineStart() + pp.Keyword("logging").suppress()
+        LOG_HOST = pp.Keyword("host").suppress()
+
+        log_host = LOG_START_MARKER + LOG_HOST + REMAINDER("Host")
+
+        command_def = log_host
+        return command_def.searchString(text)
+
+
+class SNMPValues(ConfigValues):
+    """
+    Collects SNMP values from configuration
+    """
+
+    def __init__(self, cfg_list):
+        super().__init__(cfg_list)
+        self.header = {'Node': '', 'Read': [],
+                       'Write': [], 'Location': '', 'Contact': ''}
+        self.repeated = ['Read', 'Write']
+
+    def a_parser(self, text):
         """
         Parse SNMP configuration.
         """
@@ -53,50 +187,8 @@ class SNMPValues():
             SNMP_LOCATION + REMAINDER("Location")
         snmp_contact = SNMP_START_MARKER + SNMP_CONTACT + REMAINDER("Contact")
 
-        policy_def = snmp_ro ^ snmp_rw ^ snmp_location ^ snmp_contact
-        return policy_def.searchString(text)
-
-    def __parse(self, device, cfg_lines):
-        """
-        Parse configuration lines and return dict
-
-        """
-
-        # parse text and return a list of dict
-        snmp_lines = self.__snmp_parser(cfg_lines)
-        snmp_list = [p.asDict() for p in snmp_lines if p]
-
-        # merge all dictionaries but there may be
-        # multiple read and readwrite communities
-        merged = {'Node': device, 'Read': [],
-                  'Write': [], 'Location': '', 'Contact': ''}
-        for lines in snmp_list:
-            for key, value in lines.items():
-                if key in ['Read', 'Write']:
-                    merged[key].append(value)
-                else:
-                    merged[key] = value
-        return merged
-
-    def answer(self):
-        """
-        returns a list if parsed values
-
-        """
-
-        for filename in self.cfg_list:
-            with open(filename, 'r') as fgfile:
-                cfg = fgfile.read()
-                device = os.path.basename(filename)
-                self.results.append(self.__parse(device, cfg))
-        return self
-
-    def frame(self):
-        """
-        Format as pandas frame
-        """
-
-        return pd.DataFrame(self.results)
+        command_def = snmp_ro ^ snmp_rw ^ snmp_location ^ snmp_contact
+        return command_def.searchString(text)
 
 
 def test_snmp_properties(cfg_files):
@@ -108,7 +200,7 @@ def test_snmp_properties(cfg_files):
 
     # Ask SNMP questions
     snmp_parameters = SNMPValues(cfg_files).answer().frame()
-    
+
     # check if all nodes are present
     assert len(snmp_parameters.index) == NUM, f"Expecting {NUM} lines, \
            found {len(snmp_parameters.index)}:\n{snmp_parameters}"
@@ -126,6 +218,53 @@ def test_snmp_properties(cfg_files):
         \n{community_violators}"
 
 
+def test_logger_properties(cfg_files):
+    """
+    Testing correct SysLog configuration
+
+    Test fails if SysLog configuration is missing or incomplete
+    """
+
+    log_parameters = LoggerValues(cfg_files).answer().frame()
+
+    # check if all nodes are present
+    assert len(log_parameters.index) == NUM, f"Expecting {NUM} lines, \
+           found {len(log_parameters.index)}:\n{log_parameters}"
+
+    # Find nodes that have no SysLog servers configured
+    log_violators = log_parameters[log_parameters[SERVER_COL].apply(
+        lambda x: len(x) == 0)]
+    assert log_violators.empty, f"Missing SysLog configuration:\
+        \n{log_violators}"
+
+    # Find nodes with misconfigured server address
+    server_violators = log_parameters[log_parameters[SERVER_COL].apply(
+        lambda x: len(ref_log_server.intersection(set(x))) == 0)]
+    assert server_violators.empty, f"Missing or incorrect server address:\
+        \n{server_violators}"
+
+
+def test_clock_properties(cfg_files):
+    """
+    Testing correct SysLog configuration
+
+    Test fails if Clock configuration is missing or incomplete
+    """
+
+    clk_parameters = ClockValues(cfg_files).answer().frame()
+
+    # check if all nodes are present
+    assert len(clk_parameters.index) == NUM, f"Expecting {NUM} lines, \
+           found {len(clk_parameters.index)}:\n{clk_parameters}"
+
+    # Find nodes with misconfiguration
+    clk_violators = clk_parameters.loc[clk_parameters[HRS_COL] != TIME_SHIFT]
+    assert clk_violators.empty, f"Missing or incorrect time zone:\n{clk_violators}"
+
+    # Find nodes with misconfiguration
+    clk_violators = clk_parameters.loc[clk_parameters[SUMR_COL] != ADT]
+    assert clk_violators.empty, f"Missing or incorrect Summer time:\n{clk_violators}"
+        
 if __name__ == "__main__":
 
     # Get all files in the given path
@@ -135,4 +274,6 @@ if __name__ == "__main__":
     assert files_list, "No configuration files"
 
     test_snmp_properties(files_list)
+    test_logger_properties(files_list)
+    test_clock_properties(files_list)
     print("All checks passed!")
