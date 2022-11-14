@@ -77,10 +77,10 @@ This network validation process applies some CI/CD principles to check device co
 
 ![Pipeline](img/pipeline.png)
 
-- [Ansible](https://www.ansible.com/): Network automation tool
+- [Ansible](https://www.ansible.com/): Network automation tool (written in Python)
+- [Batfish](https://www.batfish.org/): Network configuration analysis tool (written in Python)
+- [Docker](https://www.docker.com/): Platform for building, deploying, and managing containerized applications
+- [Drone](https://www.drone.io/): Continuous integration platform
 - [Git](https://git-scm.com/): Revision control system
 - [GitHub](https://github.com/): Cloud-based Git repository
-- [Drone](https://www.drone.io/): Continuous integration platform
-- [Batfish](https://www.batfish.org/): Network configuration analysis tool
 - [Python](https://www.python.org/): Programming language for network automation
-- [Docker](https://www.docker.com/): Platform for building, deploying, and managing containerized applications
