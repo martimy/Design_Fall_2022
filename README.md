@@ -21,7 +21,7 @@ Follow these instructions after completing all the lab required configuration st
 
    ```
    $ cd
-   $ git clone --branch main https://github.com/DAL-INWK/Design_Fall_2022
+   $ git clone --branch main https://github.com/martimy/Design_Fall_2022
    ```
 
 2. Create a branch named after your lab and group numbers (use the format labX_gYY, where X is the lab number and YY is your group number) and checkout the branch:
@@ -62,7 +62,7 @@ Follow these instructions after completing all the lab required configuration st
 
 5. Check if your configuration files have passed the checks:
 
-   - Go the github [repository](https://github.com/DAL-INWK/Design_Fall_2022)
+   - Go the github [repository](https://github.com/martimy/Design_Fall_2022)
    - click on 'barnches'   
 
    ![](img/branches.png)
