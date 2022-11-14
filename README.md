@@ -73,6 +73,14 @@ Follow these instructions after completing all the lab required configuration st
 
 ## Validation Process
 
-This network validation process applies some CI/CD principles to check device configuration against some common configuration errors. The process includes:
+This network validation process applies some CI/CD principles to check device configuration against some common configuration errors. The pipeline includes the following components:
 
-\<<To be completed\>>   
+![Pipeline](img/pipeline.png)
+
+- [Ansible](https://www.ansible.com/): Network automation tool
+- [Git](https://git-scm.com/): Revision control system
+- [GitHub](https://github.com/): Cloud-based Git repository
+- [Drone](https://www.drone.io/): Continuous integration platform
+- [Batfish](https://www.batfish.org/): Network configuration analysis tool
+- [Python](https://www.python.org/): Programming language for network automation
+- [Docker](https://www.docker.com/): Platform for building, deploying, and managing containerized applications
