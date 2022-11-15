@@ -77,10 +77,27 @@ This network validation process applies some CI/CD principles to check device co
 
 ![Pipeline](img/pipeline.png)
 
-- [Ansible](https://www.ansible.com/): Network automation tool (written in Python)
-- [Batfish](https://www.batfish.org/): Network configuration analysis tool (written in Python)
-- [Docker](https://www.docker.com/): Platform for building, deploying, and managing containerized applications
-- [Drone](https://www.drone.io/): Continuous integration platform
-- [Git](https://git-scm.com/): Revision control system
-- [GitHub](https://github.com/): Cloud-based Git repository
-- [Python](https://www.python.org/): Programming language for network automation
+- [Ansible](https://www.ansible.com/) — Network automation tool (based on Python):
+  Ansible is used to automate the configuration of network devices as well at retrieve the configuration files in preparation for the configuration check.
+- [Batfish](https://www.batfish.org/) — Network configuration analysis tool (based in Python):
+  Batfish performs vendor-independent validation of network configuration by answering several questions and comparing answers with expected results.   
+- [Docker](https://www.docker.com/) — Platform for building, deploying, and managing containerized applications:
+  Docker runs several containers in the pipeline, including: Drone Server, Drone Runner, Batfish, and martimy/netauto.
+- [Drone](https://www.drone.io/) — Continuous integration platform:
+  A Drone server manages the pipelines while one or more Drone runners poll the server for workloads to execute. The pipeline execution is triggered when a network configuration is pushed to the GitHub repository.
+- [Git](https://git-scm.com/) — Revision control system
+  Git tracks network configuration changes and pulls/pushes the configuration to a GitHub repository.  
+- [GitHub](https://github.com/) — Cloud-based Git repository
+  Hosts all test scripts, Ansible scripts, and Drone configuration file. GitHub is also used to push network configuration files to trigger the checking pipeline.
+- [martimy/netauto](https://hub.docker.com/r/martimy/netauto) — Docker image:
+  This is Python container that includes all modules needed to run the test scripts.
+- [Python](https://www.python.org/) — Programming language for network applications:
+  All test software is written in Python, including scripts that run tests that are not available in Batfish.
+
+## Acknowledgments
+
+The development of this pipeline follows the examples and the tutorials included in:
+
+[1] “Building a Network CI/CD Pipeline Part 1,” Welcome to the World of Tomorrow, Oct. 20, 2021. https://juliopdx.com/2021/10/20/building-a-network-ci/cd-pipeline-part-1/ (accessed Nov. 14, 2022).
+
+[2] Packet Coders. https://www.packetcoders.io/tag/blog/ (accessed Nov. 14, 2022).
