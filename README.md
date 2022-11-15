@@ -86,5 +86,5 @@ This network validation process applies some CI/CD principles to check device co
 
 The development of this pipeline follows the examples and the tutorials included in:
 
-[1] “Building a Network CI/CD Pipeline Part 1,” Welcome to the World of Tomorrow, Oct. 20, 2021. https://juliopdx.com/2021/10/20/building-a-network-ci/cd-pipeline-part-1/ (accessed Nov. 14, 2022).  
-[2] Packet Coders. https://www.packetcoders.io/tag/blog/ (accessed Nov. 14, 2022).
+[1] JulioPDX. "Building a Network CI/CD Pipeline Part 1," https://juliopdx.com/2021/10/20/building-a-network-ci/cd-pipeline-part-1/  
+[2] Packet Coders. https://www.packetcoders.io/tag/blog/
