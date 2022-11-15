@@ -10,7 +10,7 @@ steps:
   - python parser_check.py
   when:
     branch:
-    - lab2_*
+    - lab1_*
 
 - name: Lab 1 Batfish Analysis
   image: martimy/netauto:0.2
