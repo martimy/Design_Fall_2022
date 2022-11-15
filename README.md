@@ -12,36 +12,27 @@ To use this repository, each student group need to:
 
 Instructors will also be able to view the results and advise students on how to fix any errors.
 
-
 ## Instructions for students:
 
 Follow these instructions after completing all the lab required configuration steps:
 
 1. Clone the main branch of this repository in the home directory:
-
    ```
    $ cd
    $ git clone --branch main https://github.com/martimy/Design_Fall_2022
    ```
-
 2. Create a branch named after your lab and group numbers (use the format labX_gYY, where X is the lab number and YY is your group number) and checkout the branch:
-
    ```
    $ cd Design_Fall_2022
    $ git checkout -b lab1_g99
    ```
-
 3. Copy network device configuration using Ansible:
-
    ```
    $ export ANSIBLE_HOST_KEY_CHECKING=False
    $ ansible-playbook -i inventory.txt play_backup.yml
    ```
-
    If the above process was successful (all routers report ok=1), then you will find a folder 'lab/configs' created in the repository. If the process failed, then it is likely that the SSH configuration on the network devices is not completed and you must follow the instructions in the lab assignment documents to configure SSH.
-
 4. Commit the changes and push the branch:
-
    ```
    $ git add lab
    $ git status
@@ -57,11 +48,8 @@ Follow these instructions after completing all the lab required configuration st
    $ git commit -m "add config files for group g99"
    $ git push --set-upstream origin lab1_g99
    ```
-
    Note: the last step may require a username/password
-
 5. Check if your configuration files have passed the checks:
-
    - Go the github [repository](https://github.com/martimy/Design_Fall_2022)
    - click on 'barnches'   
 
@@ -98,5 +86,5 @@ This network validation process applies some CI/CD principles to check device co
 
 The development of this pipeline follows the examples and the tutorials included in:
 
-[1] “Building a Network CI/CD Pipeline Part 1,” Welcome to the World of Tomorrow, Oct. 20, 2021. https://juliopdx.com/2021/10/20/building-a-network-ci/cd-pipeline-part-1/ (accessed Nov. 14, 2022).
+[1] “Building a Network CI/CD Pipeline Part 1,” Welcome to the World of Tomorrow, Oct. 20, 2021. https://juliopdx.com/2021/10/20/building-a-network-ci/cd-pipeline-part-1/ (accessed Nov. 14, 2022).  
 [2] Packet Coders. https://www.packetcoders.io/tag/blog/ (accessed Nov. 14, 2022).
