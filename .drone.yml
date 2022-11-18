@@ -41,11 +41,4 @@ trigger:
     - main
     include:
     - lab*
-  event:
-    - push
-
----
-kind: signature
-hmac: 28914950808c06d29c7674cdec7ef9e3b13ac8bc8220a9377a2e8f902bfd9a5e
-
-...
+ 
