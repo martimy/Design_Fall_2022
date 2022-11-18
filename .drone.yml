@@ -11,6 +11,7 @@ steps:
   when:
     branch:
     - lab1_*
+    - lab2_*
 
 - name: Lab 1 Batfish Analysis
   image: martimy/netauto:0.2
@@ -21,18 +22,18 @@ steps:
   - python check_lab_1.py
   when:
     branch:
-    - lab1_*
+    - lab?_*
 
-- name: Lab 2 Batfish Analysis
+- name: Lab 3 Batfish Analysis
   image: martimy/netauto:0.2
   environment:
     BATFISH_SERVER:
       from_secret: batfish_server
   commands:
-  - python check_lab_1.py
+  - python check_lab_3.py
   when:
     branch:
-    - lab2_*
+    - lab3_*
 
 trigger:
   branch:
