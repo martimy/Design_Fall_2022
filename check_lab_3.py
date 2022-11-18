@@ -132,7 +132,7 @@ def main():
     test_undefined_references(init_snap)
     test_shut_interfaces()
     test_undefined_references(init_snap)
-
+    print("All checks passed!")
 
 if __name__ == "__main__":
     main()
