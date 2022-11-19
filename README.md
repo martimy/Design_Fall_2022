@@ -16,6 +16,11 @@ Instructors will also be able to view the results and advise students on how to 
 
 Follow these instructions after completing all the lab required configuration steps:
 
+
+### Instructions for Lab 1
+
+> Note that due to server performance, the configuration check may take a long time. 
+
 1. Clone the main branch of this repository in the home directory:
    ```
    $ cd
@@ -58,6 +63,23 @@ Follow these instructions after completing all the lab required configuration st
    - Verify that you have a green checkmark in front of your branch. You can click on the checkmark to find details.
 
    ![](img/checks.png)
+
+### Instructions for Labs 2 to 5
+
+The following steps assume you have followed the steps for Lab 1 previously.
+
+1. Change directory to Design_Fall_2022 and checkout the main branch:
+    ```
+    $ cd
+    $ cd Design_Fall_2022
+    $ git checkout main
+    ```
+2. Update the repository then create a branch named after your lab and group numbers (use the format labX_gYY, where X is the lab number and YY is your group number) and checkout the branch:
+   ```
+   $ git pull
+   $ git checkout -b lab2_g99
+   ```
+3. Follow same steps 3 to 5 above.
 
 ## Validation Process
 
