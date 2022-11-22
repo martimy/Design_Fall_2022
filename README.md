@@ -19,7 +19,7 @@ Follow these instructions after completing all the lab required configuration st
 
 ### Instructions for Lab 1
 
-> Note that due to server performance, the configuration check may take a long time. 
+> Note that due to server performance, the configuration check may take a long time.
 
 1. Clone the main branch of this repository in the home directory:
    ```
@@ -103,6 +103,35 @@ This network validation process applies some CI/CD principles to check device co
   This is Python container that includes all modules needed to run the test scripts.
 - [Python](https://www.python.org/) — Programming language for network applications:  
   All test software is written in Python, including scripts that run tests that are not available in Batfish.
+
+## Installation
+
+You need to host Drone server and runner(s) on server (locally or in the Cloud). The installation steps are as follows (for Ubuntu Linux):
+
+1. Install Docker using the convenience-script (find other methods of installations [here](https://docs.docker.com/engine/install/ubuntu/).):
+
+    ```
+     $ curl -fsSL https://get.docker.com -o get-docker.sh
+     $ sudo sh get-docker.sh
+    ```
+
+2. Install Drone Server, and Drone Runner:
+
+    a. At GitHub add Drone information to OAuth Apps. Record Client ID and Clinet Secret
+    b. At the Drone server host, edit the start_drone.sh script to include the following information:
+       - Client ID
+       - Client Secret
+       - Runner secret (you need to generate)
+       - Server host IP address
+       - Admin username (to restrict access)
+
+    c. Execute the script start_drone.sh
+    d. edit the start_runner.sh script to include:
+       - Runner secret
+       - Drone host IP address
+
+3. Log into Drone server and activate this repository.
+4. Add the secrets needed in your test scripts (e.g. Batfish server location)
 
 ## Acknowledgments
 
