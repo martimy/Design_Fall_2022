@@ -117,7 +117,7 @@ You need to host Drone server and runner(s) on server (locally or in the Cloud).
 
 2. Install Drone Server, and Drone Runner:
 
-    a. At GitHub add Drone information to OAuth Apps. Record Client ID and Clinet Secret
+    a. At GitHub add Drone information to OAuth Apps. Record Client ID and Client Secret  
     b. At the Drone server host, edit the start_drone.sh script to include the following information:
        - Client ID
        - Client Secret
@@ -125,7 +125,7 @@ You need to host Drone server and runner(s) on server (locally or in the Cloud).
        - Server host IP address
        - Admin username (to restrict access)
 
-    c. Execute the script start_drone.sh
+    c. Execute the script start_drone.sh  
     d. edit the start_runner.sh script to include:
        - Runner secret
        - Drone host IP address
