@@ -16,10 +16,7 @@ Instructors will also be able to view the results and advise students on how to 
 
 Follow these instructions after completing all the lab required configuration steps:
 
-
 ### Instructions for Lab 1
-
-> Note that due to server performance, the configuration check may take a long time.
 
 1. Clone the main branch of this repository in the home directory:
    ```
