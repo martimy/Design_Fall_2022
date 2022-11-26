@@ -13,11 +13,17 @@ from pybatfish.client.commands import (
 from pybatfish.question import load_questions
 from pybatfish.question import bfq
 from pybatfish.client.asserts import (
+    assert_no_duplicate_router_ids,
+    assert_no_incompatible_bgp_sessions,
+    assert_no_unestablished_bgp_sessions,
     assert_no_undefined_references,
     assert_num_results,
     assert_zero_results,
 )
+from rich.console import Console
 
+
+console = Console(color_system="truecolor")
 
 # Get environment variables and constants
 BATFISH_SERVER = os.getenv('BATFISH_SERVER')
@@ -79,6 +85,8 @@ def test_host_properties(domain, hosts, ntp_servers):
     Test fails if any device property does not match requirements
     """
 
+    console.rule("[bold yellow]Testing for host properties")
+
     node_props = bfq.nodeProperties(
         nodes="", properties="Hostname, Domain_Name, NTP_Servers").answer().frame()
     name_violators = node_props[node_props['Hostname'].apply(
@@ -94,7 +102,6 @@ def test_host_properties(domain, hosts, ntp_servers):
     assert_zero_results(ns_violators, soft=False)
 
 
-
 def test_shut_interfaces():
     """
     Testing unused interfaces are shut
@@ -102,6 +109,7 @@ def test_shut_interfaces():
     Test fails if ports 2 or 3 are active
     """
 
+    console.rule("[bold yellow]Testing for shut interfaces")
     violators = bfq.interfaceProperties(
         interfaces="/GigabitEthernet[23]/", properties="Active",
         excludeShutInterfaces=True).answer()
@@ -113,8 +121,34 @@ def test_undefined_references(snap):
     Test for references to undefined structures
 
     """
+
+    console.rule("[bold yellow]Testing for undefined references")
     assert_no_undefined_references(snapshot=snap, soft=False)
 
+
+def test_duplicate_rtr_ids(snap):
+    """
+    Testing for duplicate router IDs
+    """
+
+    console.rule("[bold yellow]Testing for duplicate router IDs")
+    assert_no_duplicate_router_ids(snapshot=snap,protocols={"bgp"})
+
+def test_bgp_compatibility(snap):
+    """
+    Testing for incompatible BGP sessions
+    """
+
+    console.rule("[bold yellow]Testing for incompatible BGP sessions")
+    assert_no_incompatible_bgp_sessions(snapshot=snap)
+
+def test_bgp_unestablished(snap):
+    """
+    Testing for BGP sessions that are not established
+    """
+
+    console.rule("[bold yellow]Testing for unestablished BGP sessions")
+    assert_no_unestablished_bgp_sessions(snapshot=snap)
 
 def main():
     """Initialize batfish"""
@@ -125,14 +159,23 @@ def main():
         SNAPSHOT_DIR, name=SNAPSHOT_NAME, overwrite=True)
     load_questions()
 
+    console.rule("[bold yellow]Testing number of config files")
     test_num_routers(NUM_FILES)
+
+    console.rule("[bold yellow]Testing for parsing errors")
     test_init_issues()
-    test_clean_parsing()
+
+    # test_clean_parsing()
+
     test_host_properties(DOMAIN_NAME, routers, servers)
-    test_undefined_references(init_snap)
     test_shut_interfaces()
     test_undefined_references(init_snap)
-    print("All checks passed!")
+    test_duplicate_rtr_ids(init_snap)
+    test_bgp_compatibility(init_snap)
+    test_bgp_unestablished(init_snap)
+
+    console.rule("[bold green]:heavy_check_mark: All cheks passed :heavy_check_mark:")
+
 
 if __name__ == "__main__":
     main()
