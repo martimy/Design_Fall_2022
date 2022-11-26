@@ -177,7 +177,7 @@ def main():
     test_bgp_unestablished(init_snap)
 
     console.rule(
-        "[bold green]:heavy_check_mark: All cheks passed :heavy_check_mark:")
+        "[bold green]:heavy_check_mark: All checks passed :heavy_check_mark:")
 
 
 if __name__ == "__main__":
