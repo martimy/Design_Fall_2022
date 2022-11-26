@@ -51,6 +51,7 @@ def test_num_routers(num):
     The test fails if the number of files is not equal to 'num'
     """
 
+    console.rule("[bold yellow]Testing number of config files")
     file_status = bfq.fileParseStatus().answer()
     assert_num_results(file_status, num, soft=False)
 
@@ -63,6 +64,7 @@ def test_init_issues():
     in the configuration due to lack of support for certain features.
     """
 
+    console.rule("[bold yellow]Testing for init issues")
     inissue = bfq.initIssues().answer()
     assert_zero_results(inissue, soft=True)
 
@@ -73,9 +75,11 @@ def test_clean_parsing():
 
     The test fails if the returned status is not 'PASSED'
     """
+
+    console.rule("[bold yellow]Testing for clean parsing")
     file_status = bfq.fileParseStatus().answer().frame()
     status_violations = file_status[file_status["Status"] != "PASSED"]
-    assert_zero_results(status_violations, soft=False)
+    assert_zero_results(status_violations, soft=True)
 
 
 def test_host_properties(domain, hosts, ntp_servers):
@@ -132,7 +136,8 @@ def test_duplicate_rtr_ids(snap):
     """
 
     console.rule("[bold yellow]Testing for duplicate router IDs")
-    assert_no_duplicate_router_ids(snapshot=snap,protocols={"bgp"})
+    assert_no_duplicate_router_ids(snapshot=snap, protocols={"bgp"})
+
 
 def test_bgp_compatibility(snap):
     """
@@ -142,6 +147,7 @@ def test_bgp_compatibility(snap):
     console.rule("[bold yellow]Testing for incompatible BGP sessions")
     assert_no_incompatible_bgp_sessions(snapshot=snap)
 
+
 def test_bgp_unestablished(snap):
     """
     Testing for BGP sessions that are not established
@@ -149,6 +155,7 @@ def test_bgp_unestablished(snap):
 
     console.rule("[bold yellow]Testing for unestablished BGP sessions")
     assert_no_unestablished_bgp_sessions(snapshot=snap)
+
 
 def main():
     """Initialize batfish"""
@@ -159,14 +166,9 @@ def main():
         SNAPSHOT_DIR, name=SNAPSHOT_NAME, overwrite=True)
     load_questions()
 
-    console.rule("[bold yellow]Testing number of config files")
     test_num_routers(NUM_FILES)
-
-    console.rule("[bold yellow]Testing for parsing errors")
     test_init_issues()
-
-    # test_clean_parsing()
-
+    test_clean_parsing()
     test_host_properties(DOMAIN_NAME, routers, servers)
     test_shut_interfaces()
     test_undefined_references(init_snap)
@@ -174,7 +176,8 @@ def main():
     test_bgp_compatibility(init_snap)
     test_bgp_unestablished(init_snap)
 
-    console.rule("[bold green]:heavy_check_mark: All cheks passed :heavy_check_mark:")
+    console.rule(
+        "[bold green]:heavy_check_mark: All cheks passed :heavy_check_mark:")
 
 
 if __name__ == "__main__":
