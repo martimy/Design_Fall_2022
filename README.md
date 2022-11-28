@@ -103,33 +103,57 @@ This network validation process applies some CI/CD principles to check device co
 
 ## Installation
 
-You need to host Drone server and runner(s) on server (locally or in the Cloud). The installation steps are as follows (for Ubuntu Linux):
+### Server Installation
 
-1. Install Docker using the convenience-script (find other methods of installations [here](https://docs.docker.com/engine/install/ubuntu/).):
+Docker, Drone server and runner(s) need to be installed on a publicly accessible server (hosted locally or in the Cloud). The installation steps are as follows (for Ubuntu Linux):
+
+1. At GitHub, go to (Settings -> Developer Settings -> OAuth Apps) and add Drone information to OAuth Apps. Record Client ID and Client Secret.
+
+2. Install Docker using the convenience-script (find other methods of installations [here](https://docs.docker.com/engine/install/ubuntu/).):
 
     ```
      $ curl -fsSL https://get.docker.com -o get-docker.sh
      $ sudo sh get-docker.sh
     ```
 
-2. Install Drone Server, and Drone Runner:
+3. Generate a shared secret between the Drone server and runners:
 
-    a. At GitHub add Drone information to OAuth Apps. Record Client ID and Client Secret  
-    b. At the Drone server host, edit the start_drone.sh script to include the following information:
-       - Client ID
-       - Client Secret
-       - Runner secret (you need to generate)
-       - Server host IP address
-       - Admin username (to restrict access)
+   ```
+   $ openssl rand -hex 16
+   ```
 
-    c. Execute the script start_drone.sh  
-    d. edit the start_runner.sh script to include:
+4. Install Drone Server, and Drone Runner:
+
+   ```
+   $ docker pull drone/drone:2
+   $ docker pull drone/drone-runner-docker:1
+   ```
+
+5. At the Drone server host, edit the start_drone.sh script to include the following information:
+       - Client ID and Secret (from step 1)
+       - Runner secret (from step 3)
+       - Host IP address
+       - Admin username (optional)
+
+   also, edit the start_runner.sh script to include:
        - Runner secret
-       - Drone host IP address
+       - Host IP address
 
-3. Log into Drone server and activate this repository.
-4. Add the secrets needed in your test scripts (e.g. Batfish server location)
+6. Execute the script start_drone.sh and start_runner.sh
 
+    ```
+    $ ./start_drone
+    $ ./start_runner
+    ```  
+7. Direct your web browser to the server IP address. Log into the Drone server and activate the required repository (this one, for example).
+8. In the repository Setting, add any secrets needed in your test scripts (e.g. Batfish server location)
+
+### Pipeline installation and configuration
+
+This part requires the installation for Batfish's Docker image and configuring the CI/CD pipeline.
+
+\<to be completed\>
+ 
 ## Acknowledgments
 
 The development of this pipeline follows the examples and the tutorials included in:
