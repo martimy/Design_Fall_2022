@@ -5,11 +5,7 @@ Created by Maen Artimy, Nov 2022
 
 import os
 import pandas as pd
-from pybatfish.client.commands import (
-    bf_session,
-    bf_set_network,
-    bf_init_snapshot
-)
+from pybatfish.client.commands import bf_session, bf_set_network, bf_init_snapshot
 from pybatfish.question import load_questions
 from pybatfish.question import bfq
 from pybatfish.client.asserts import (
@@ -20,21 +16,21 @@ from pybatfish.client.asserts import (
 
 
 # Get environment variables and constants
-BATFISH_SERVER = os.getenv('BATFISH_SERVER')
+BATFISH_SERVER = os.getenv("BATFISH_SERVER")
 NETWORK_NAME = "DESIGN_LAB1"
 SNAPSHOT_NAME = "lab1"
 SNAPSHOT_DIR = "lab"
 
 # from rich import print as rprint
 
-pd.set_option('display.max_columns', None)
-pd.set_option('expand_frame_repr', False)
+pd.set_option("display.max_columns", None)
+pd.set_option("expand_frame_repr", False)
 
 
 # Snap info
 NUM_FILES = 5
 DOMAIN_NAME = "inwk.local"
-routers = ['r11', 'r12', 'r21', 'r22', 'r23']
+routers = ["r11", "r12", "r21", "r22", "r23"]
 servers = set(["10.1.155.100"])
 
 
@@ -79,20 +75,25 @@ def test_host_properties(domain, hosts, ntp_servers):
     Test fails if any device property does not match requirements
     """
 
-    node_props = bfq.nodeProperties(
-        nodes="", properties="Hostname, Domain_Name, NTP_Servers").answer().frame()
-    name_violators = node_props[node_props['Hostname'].apply(
-        lambda x: x not in hosts)]
+    node_props = (
+        bfq.nodeProperties(nodes="", properties="Hostname, Domain_Name, NTP_Servers")
+        .answer()
+        .frame()
+    )
+    name_violators = node_props[node_props["Hostname"].apply(lambda x: x not in hosts)]
     assert_zero_results(name_violators, soft=False)
 
-    domain_violators = node_props[node_props['Domain_Name'].apply(
-        lambda x: x != domain)]
+    domain_violators = node_props[
+        node_props["Domain_Name"].apply(lambda x: x != domain)
+    ]
     assert_zero_results(domain_violators, soft=False)
 
-    ns_violators = node_props[node_props["NTP_Servers"].apply(
-        lambda x: len(ntp_servers.intersection(set(x))) == 0)]
+    ns_violators = node_props[
+        node_props["NTP_Servers"].apply(
+            lambda x: len(ntp_servers.intersection(set(x))) == 0
+        )
+    ]
     assert_zero_results(ns_violators, soft=False)
-
 
 
 def test_shut_interfaces():
@@ -103,8 +104,10 @@ def test_shut_interfaces():
     """
 
     violators = bfq.interfaceProperties(
-        interfaces="/GigabitEthernet[23]/", properties="Active",
-        excludeShutInterfaces=True).answer()
+        interfaces="/GigabitEthernet[23]/",
+        properties="Active",
+        excludeShutInterfaces=True,
+    ).answer()
     assert_zero_results(violators, soft=True)
 
 
@@ -121,8 +124,7 @@ def main():
 
     bf_session.host = BATFISH_SERVER
     bf_set_network(NETWORK_NAME)
-    init_snap = bf_init_snapshot(
-        SNAPSHOT_DIR, name=SNAPSHOT_NAME, overwrite=True)
+    init_snap = bf_init_snapshot(SNAPSHOT_DIR, name=SNAPSHOT_NAME, overwrite=True)
     load_questions()
 
     test_num_routers(NUM_FILES)
@@ -133,6 +135,7 @@ def main():
     test_shut_interfaces()
     test_undefined_references(init_snap)
     print("All checks passed!")
+
 
 if __name__ == "__main__":
     main()

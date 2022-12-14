@@ -25,17 +25,18 @@ SNMP_END_MARKER = pp.LineEnd().suppress()
 REMAINDER = pp.SkipTo(pp.LineEnd())
 
 NUM = 5
-PATH = 'lab/configs'
-READ_COL = 'Read'
-SERVER_COL = 'Host'
-HRS_COL = 'HRS'
+PATH = "lab/configs"
+READ_COL = "Read"
+SERVER_COL = "Host"
+HRS_COL = "HRS"
 ref_string = set(["dcread"])
-ref_log_server = set(['10.1.155.100'])
-TIME_SHIFT = '-4'
-SUMR_COL = 'Summer'
-ADT = 'ADT'
+ref_log_server = set(["10.1.155.100"])
+TIME_SHIFT = "-4"
+SUMR_COL = "Summer"
+ADT = "ADT"
 
-class ConfigValues():
+
+class ConfigValues:
     """
     Collects values from configuration
     """
@@ -43,7 +44,7 @@ class ConfigValues():
     def __init__(self, cfg_list):
         self.cfg_list = cfg_list
         self.results = []
-        self.header = {'Node': ''}
+        self.header = {"Node": ""}
         self.repeated = []
 
     def a_parser(self, text):
@@ -64,7 +65,7 @@ class ConfigValues():
         # multiple read and readwrite communities
         merged = self.header.copy()
         # merged.update(self.header)
-        merged['Node'] = device
+        merged["Node"] = device
         for col in self.repeated:
             merged[col] = []
         for lines in log_list:
@@ -82,7 +83,7 @@ class ConfigValues():
         """
 
         for filename in self.cfg_list:
-            with open(filename, 'r') as fgfile:
+            with open(filename, "r") as fgfile:
                 cfg = fgfile.read()
                 device = os.path.basename(filename)
                 self.results.append(self.parse(device, cfg))
@@ -104,8 +105,14 @@ class ClockValues(ConfigValues):
     def __init__(self, cfg_list):
         super().__init__(cfg_list)
 
-        self.header = {'Node': '', 'Zone': '', 'HRS': '', 'MIN': '',
-                       'Summer': '', 'Recurring': ''}
+        self.header = {
+            "Node": "",
+            "Zone": "",
+            "HRS": "",
+            "MIN": "",
+            "Summer": "",
+            "Recurring": "",
+        }
         self.repeated = []
 
     def a_parser(self, text):
@@ -116,17 +123,19 @@ class ClockValues(ConfigValues):
         CLK_START_MARKER = pp.LineStart() + pp.Keyword("clock").suppress()
         CLK_TIMEZONE = pp.Keyword("timezone").suppress()
         CLK_ZONE = pp.Word(pp.printables, asKeyword=True)
-        CLK_HRS = pp.Combine(pp.Optional('+') + pp.Optional('-') +
-                             pp.Word(pp.nums))("HRS")
+        CLK_HRS = pp.Combine(pp.Optional("+") + pp.Optional("-") + pp.Word(pp.nums))(
+            "HRS"
+        )
         CLK_MIN = pp.Word(pp.nums)("MIN")
         CLK_SUMMER = pp.Keyword("summer-time").suppress()
-        CLK_REC = pp.Keyword("recurring").setParseAction(
-            pp.replaceWith("enabled"))
+        CLK_REC = pp.Keyword("recurring").setParseAction(pp.replaceWith("enabled"))
 
-        clock_timezone = CLK_START_MARKER + CLK_TIMEZONE + CLK_ZONE("Zone") + \
-            CLK_HRS + CLK_MIN
-        clock_summertime = CLK_START_MARKER + CLK_SUMMER + \
-            CLK_ZONE("Summer") + CLK_REC("Recurring")
+        clock_timezone = (
+            CLK_START_MARKER + CLK_TIMEZONE + CLK_ZONE("Zone") + CLK_HRS + CLK_MIN
+        )
+        clock_summertime = (
+            CLK_START_MARKER + CLK_SUMMER + CLK_ZONE("Summer") + CLK_REC("Recurring")
+        )
 
         command_def = clock_timezone ^ clock_summertime
         return command_def.searchString(text)
@@ -140,8 +149,8 @@ class LoggerValues(ConfigValues):
     def __init__(self, cfg_list):
         super().__init__(cfg_list)
 
-        self.header = {'Node': '', 'Host': []}
-        self.repeated = ['Host']
+        self.header = {"Node": "", "Host": []}
+        self.repeated = ["Host"]
 
     def a_parser(self, text):
         """
@@ -164,9 +173,14 @@ class SNMPValues(ConfigValues):
 
     def __init__(self, cfg_list):
         super().__init__(cfg_list)
-        self.header = {'Node': '', 'Read': [],
-                       'Write': [], 'Location': '', 'Contact': ''}
-        self.repeated = ['Read', 'Write']
+        self.header = {
+            "Node": "",
+            "Read": [],
+            "Write": [],
+            "Location": "",
+            "Contact": "",
+        }
+        self.repeated = ["Read", "Write"]
 
     def a_parser(self, text):
         """
@@ -179,12 +193,19 @@ class SNMPValues(ConfigValues):
         SNMP_CONTACT = pp.Keyword("contact").suppress()
         SNMP_STRING = pp.Word(pp.alphanums, asKeyword=True)
 
-        snmp_ro = SNMP_START_MARKER + SNMP_COMMUNITY + \
-            SNMP_STRING("Read") + pp.Keyword("RO").suppress()
-        snmp_rw = SNMP_START_MARKER + SNMP_COMMUNITY + \
-            SNMP_STRING("Write") + pp.Keyword("RW").suppress()
-        snmp_location = SNMP_START_MARKER + \
-            SNMP_LOCATION + REMAINDER("Location")
+        snmp_ro = (
+            SNMP_START_MARKER
+            + SNMP_COMMUNITY
+            + SNMP_STRING("Read")
+            + pp.Keyword("RO").suppress()
+        )
+        snmp_rw = (
+            SNMP_START_MARKER
+            + SNMP_COMMUNITY
+            + SNMP_STRING("Write")
+            + pp.Keyword("RW").suppress()
+        )
+        snmp_location = SNMP_START_MARKER + SNMP_LOCATION + REMAINDER("Location")
         snmp_contact = SNMP_START_MARKER + SNMP_CONTACT + REMAINDER("Contact")
 
         command_def = snmp_ro ^ snmp_rw ^ snmp_location ^ snmp_contact
@@ -202,19 +223,29 @@ def test_snmp_properties(cfg_files):
     snmp_parameters = SNMPValues(cfg_files).answer().frame()
 
     # check if all nodes are present
-    assert len(snmp_parameters.index) == NUM, f"Expecting {NUM} lines, \
+    assert (
+        len(snmp_parameters.index) == NUM
+    ), f"Expecting {NUM} lines, \
            found {len(snmp_parameters.index)}:\n{snmp_parameters}"
 
     # Find nodes that have no SNMP servers configured
-    snmp_violators = snmp_parameters[snmp_parameters[READ_COL].apply(
-        lambda x: len(x) == 0)]
-    assert snmp_violators.empty, f"Missing SNMP configuration:\
+    snmp_violators = snmp_parameters[
+        snmp_parameters[READ_COL].apply(lambda x: len(x) == 0)
+    ]
+    assert (
+        snmp_violators.empty
+    ), f"Missing SNMP configuration:\
         \n{snmp_violators}"
 
     # Find nodes with misconfigured read community string
-    community_violators = snmp_parameters[snmp_parameters[READ_COL].apply(
-        lambda x: len(ref_string.intersection(set(x))) == 0)]
-    assert community_violators.empty, f"Missing or incorrect community string:\
+    community_violators = snmp_parameters[
+        snmp_parameters[READ_COL].apply(
+            lambda x: len(ref_string.intersection(set(x))) == 0
+        )
+    ]
+    assert (
+        community_violators.empty
+    ), f"Missing or incorrect community string:\
         \n{community_violators}"
 
 
@@ -228,19 +259,29 @@ def test_logger_properties(cfg_files):
     log_parameters = LoggerValues(cfg_files).answer().frame()
 
     # check if all nodes are present
-    assert len(log_parameters.index) == NUM, f"Expecting {NUM} lines, \
+    assert (
+        len(log_parameters.index) == NUM
+    ), f"Expecting {NUM} lines, \
            found {len(log_parameters.index)}:\n{log_parameters}"
 
     # Find nodes that have no SysLog servers configured
-    log_violators = log_parameters[log_parameters[SERVER_COL].apply(
-        lambda x: len(x) == 0)]
-    assert log_violators.empty, f"Missing SysLog configuration:\
+    log_violators = log_parameters[
+        log_parameters[SERVER_COL].apply(lambda x: len(x) == 0)
+    ]
+    assert (
+        log_violators.empty
+    ), f"Missing SysLog configuration:\
         \n{log_violators}"
 
     # Find nodes with misconfigured server address
-    server_violators = log_parameters[log_parameters[SERVER_COL].apply(
-        lambda x: len(ref_log_server.intersection(set(x))) == 0)]
-    assert server_violators.empty, f"Missing or incorrect server address:\
+    server_violators = log_parameters[
+        log_parameters[SERVER_COL].apply(
+            lambda x: len(ref_log_server.intersection(set(x))) == 0
+        )
+    ]
+    assert (
+        server_violators.empty
+    ), f"Missing or incorrect server address:\
         \n{server_violators}"
 
 
@@ -254,7 +295,9 @@ def test_clock_properties(cfg_files):
     clk_parameters = ClockValues(cfg_files).answer().frame()
 
     # check if all nodes are present
-    assert len(clk_parameters.index) == NUM, f"Expecting {NUM} lines, \
+    assert (
+        len(clk_parameters.index) == NUM
+    ), f"Expecting {NUM} lines, \
            found {len(clk_parameters.index)}:\n{clk_parameters}"
 
     # Find nodes with misconfiguration
@@ -264,12 +307,16 @@ def test_clock_properties(cfg_files):
     # Find nodes with misconfiguration
     clk_violators = clk_parameters.loc[clk_parameters[SUMR_COL] != ADT]
     assert clk_violators.empty, f"Missing or incorrect Summer time:\n{clk_violators}"
-        
+
+
 if __name__ == "__main__":
 
     # Get all files in the given path
-    files_list = [os.path.join(PATH, path) for path in os.listdir(
-        PATH) if os.path.isfile(os.path.join(PATH, path))]
+    files_list = [
+        os.path.join(PATH, path)
+        for path in os.listdir(PATH)
+        if os.path.isfile(os.path.join(PATH, path))
+    ]
 
     assert files_list, "No configuration files"
 
